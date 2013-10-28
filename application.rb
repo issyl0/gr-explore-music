@@ -21,12 +21,8 @@ echonest_track1 = `echoprint-codegen "#{user_track_filepath}" 10 30`
 echonest_track2 = `echoprint-codegen "#{user_track_filepath2}" 10 30`
 @echonest_identified2 = Echowrap.song_identify(:query => echonest_track2)
 
-# URI encode the title and artist strings to handle spaces.
-@echonest_name_encoded = URI::encode(@echonest_identified2.title)
-@echonest_artist_encoded = URI::encode(@echonest_identified2.artist_name)
-
 # Push the song data to last.fm and retreive cover art.
- lastfm_url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track=#{@echonest_name_encoded}&artist=#{@echonest_artist_encoded}&api_key=#{LASTFM_API_KEY}&format=json"
+ lastfm_url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track=#{URI::encode(@echonest_identified2.title)}&artist=#{URI::encode(@echonest_identified2.artist_name)}&api_key=#{LASTFM_API_KEY}&format=json"
  @lastfm_image = JSON.parse(RestClient.get(lastfm_url))['track']['album']['image'][2]['#text']
  p "Album art: #{@lastfm_image}"
 end
